@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/OASIS-Market.html" }
+    { "source": "/(.*)", "destination": "/OASIS-Market-1.html" }
   ]
 }
