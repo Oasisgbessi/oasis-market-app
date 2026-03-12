@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OASIS Market</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --o1:#0B0907;--o2:#141009;--o3:#1C150D;--o4:#261C11;
+  --sand:#C8924A;--sandL:#E8B870;--sandP:#F5D9A8;
+  --cream:#F0E8D8;--muted:#A89880;
+  --red:#C0392B;--green:#27AE60;--blue:#2980B9;
+  --r:10px;--rL:16px;--shadow:0 8px 32px rgba(0,0,0,.5);--glow:0 4px 24px rgba(200,146,74,.25);
+  --nav-h:58px;--bot-h:62px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--o1);color:var(--cream);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--o2)}::-webkit-scrollbar-thumb{background:var(--sand);border-radius:3px}
+h1,h2,h3{font-family:'Playfair Display',serif;line-height:1.15}
+.tgold{color:var(--sand)}.tmuted{color:var(--muted)}.tsm{font-size:.85rem}.txs{font-size:.75rem}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 20px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;border:none;transition:all .2s;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-gold{background:linear-gradient(135deg,var(--sand),var(--sandL));color:var(--o1);font-weight:600}
+.btn-gold:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--glow)}
+.btn-ghost{background:rgba(255,255,255,.07);color:var(--cream)}
+.btn-ghost:hover{background:rgba(255,255,255,.12)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:#e74c3c}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover{background:#2ecc71}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-sm{padding:6px 14px;font-size:.78rem}
+.btn-full{width:100%}
+
+/* CARD */
+.card{background:var(--o2);border:1px solid rgba(200,146,74,.12);border-radius:var(--rL)}
+.card-hover{transition:all .25s;cursor:pointer}
+.card-hover:hover{border-color:rgba(200,146,74,.35);transform:translateY(-3px);box-shadow:var(--shadow)}
+
+/* FORMS */
+.fg{margin-bottom:15px}
+.fl{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
+.fi{width:100%;background:var(--o3);border:1px solid rgba(200,146,74,.18);border-radius:var(--r);padding:11px 15px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:.92rem;outline:none;transition:border-color .2s}
+.fi:focus{border-color:var(--sand)}.fi::placeholder{color:var(--muted);opacity:.55}
+select.fi option{background:var(--o3)}
+textarea.fi{resize:vertical;min-height:85px}
+.ferr{font-size:.78rem;color:#e74c3c;margin-top:5px;display:none}
+.ferr.show{display:block}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:50px;font-size:.7rem;font-weight:600}
+.bg-gold{background:rgba(200,146,74,.2);color:var(--sandL)}
+.bg-green{background:rgba(39,174,96,.2);color:#2ecc71}
+.bg-red{background:rgba(192,57,43,.2);color:#e74c3c}
+.bg-gray{background:rgba(255,255,255,.08);color:var(--muted)}
+.bg-blue{background:rgba(41,128,185,.2);color:#5dade2}
+
+/* TOP NAV */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(11,9,7,.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,146,74,.12);height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:10px}
+.tlogo{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;color:var(--sand)}
+.tlogo span{color:var(--muted);font-family:Outfit,sans-serif;font-weight:300;font-size:.6em}
+.tbr{display:flex;align-items:center;gap:7px}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--sand),var(--sandL));color:var(--o1);font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.av-lg{width:44px;height:44px;font-size:.95rem}
+.av-xl{width:56px;height:56px;font-size:1.2rem}
+.notif-btn{background:rgba(200,146,74,.1);border:1px solid rgba(200,146,74,.2);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.9rem;position:relative;color:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ndot{display:none;position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+
+/* BOTTOM NAV (mobile) */
+#botnav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(11,9,7,.97);backdrop-filter:blur(16px);border-top:1px solid rgba(200,146,74,.12);height:var(--bot-h);display:flex;align-items:center}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 4px;transition:all .2s;position:relative}
+.bn-item .bni{font-size:1.3rem;line-height:1}
+.bn-item .bnl{font-size:.62rem;color:var(--muted);font-weight:500;transition:color .2s}
+.bn-item.active .bnl{color:var(--sand)}
+.bn-item.active .bni{filter:drop-shadow(0 0 6px var(--sand))}
+.bn-dot{position:absolute;top:6px;right:calc(50% - 14px);width:7px;height:7px;border-radius:50%;background:var(--red);display:none}
+
+/* MAIN CONTENT */
+#main{padding-top:calc(var(--nav-h) + 14px);padding-bottom:calc(var(--bot-h) + 14px);padding-left:14px;padding-right:14px;min-height:100vh}
+
+/* SECTION HEADER */
+.sh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:10px;flex-wrap:wrap}
+.st{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700}
+.ss{font-size:.8rem;color:var(--muted);margin-top:2px}
+
+/* STATS */
+.srow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.sc{padding:15px}
+.sc-l{font-size:.67rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px}
+.sc-v{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--sand)}
+.sc-n{font-size:.7rem;color:var(--muted);margin-top:1px}
+
+/* SEARCH */
+.srch{display:flex;gap:8px;margin-bottom:14px}
+.sw{flex:1;position:relative}
+.sw-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem;pointer-events:none}
+.si2{width:100%;background:var(--o3);border:1px solid rgba(200,146,74,.18);border-radius:50px;padding:9px 14px 9px 34px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:.86rem;outline:none}
+.si2:focus{border-color:var(--sand)}.si2::placeholder{color:var(--muted)}
+.csel{background:var(--o3);border:1px solid rgba(200,146,74,.18);border-radius:50px;padding:9px 12px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:.82rem;outline:none;cursor:pointer;max-width:120px}
+
+/* PRODUCTS GRID */
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:480px){.pg{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:768px){.pg{grid-template-columns:repeat(4,1fr)}}
+.pc{overflow:hidden}
+.pim{position:relative;height:150px;background:var(--o3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pim img{width:100%;height:100%;object-fit:cover}
+.pph{font-size:2.8rem;opacity:.2}
+.pb1{position:absolute;top:6px;left:6px;background:linear-gradient(135deg,var(--sand),var(--sandL));color:var(--o1);font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase}
+.pb2{position:absolute;top:6px;right:6px;background:rgba(39,174,96,.85);color:#fff;font-size:.58rem;font-weight:600;padding:2px 6px;border-radius:4px}
+.pbody{padding:10px}
+.pname{font-family:'Playfair Display',serif;font-weight:700;font-size:.88rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psel{font-size:.7rem;color:var(--muted);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ppr{font-size:.95rem;font-weight:600;color:var(--sand)}
+.pact{display:flex;gap:5px;margin-top:8px}
+
+/* TABLE */
+.tw{background:var(--o2);border:1px solid rgba(200,146,74,.1);border-radius:var(--rL);overflow:hidden;overflow-x:auto}
+table.dt{width:100%;border-collapse:collapse;min-width:500px}
+.dt th{font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:10px 13px;text-align:left;border-bottom:1px solid rgba(200,146,74,.1)}
+.dt td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.03);font-size:.82rem;vertical-align:middle}
+.dt tr:last-child td{border-bottom:none}
+.tda{display:flex;gap:4px;flex-wrap:wrap}
+
+/* CHAT */
+.chat-wrap{background:var(--o2);border:1px solid rgba(200,146,74,.1);border-radius:var(--rL);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - var(--nav-h) - var(--bot-h) - 80px);min-height:400px}
+.conv-list{overflow-y:auto;border-bottom:1px solid rgba(200,146,74,.08)}
+.conv-list.hidden{display:none}
+.cl-h{padding:12px 14px;font-weight:600;border-bottom:1px solid rgba(200,146,74,.08);font-size:.9rem;display:flex;align-items:center;justify-content:space-between}
+.ci{display:flex;align-items:center;gap:9px;padding:11px 13px;border-bottom:1px solid rgba(200,146,74,.05);cursor:pointer;transition:background .15s}
+.ci:hover,.ci.active{background:rgba(200,146,74,.08)}
+.ci-nm{font-size:.84rem;font-weight:500}
+.ci-pv{font-size:.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.chat-open{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.chat-open.hidden{display:none}
+.cr-h{padding:11px 13px;border-bottom:1px solid rgba(200,146,74,.08);display:flex;align-items:center;gap:9px}
+.back-btn{background:none;border:none;color:var(--sand);cursor:pointer;font-size:1.1rem;padding:2px 6px 2px 0}
+.msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.mw{display:flex;flex-direction:column}
+.mw.mine{align-items:flex-end}.mw.other{align-items:flex-start}
+.mb{max-width:75%;padding:8px 12px;border-radius:12px;font-size:.84rem;line-height:1.5}
+.mw.mine .mb{background:linear-gradient(135deg,var(--sand),var(--sandL));color:var(--o1);border-bottom-right-radius:3px}
+.mw.other .mb{background:var(--o4);color:var(--cream);border-bottom-left-radius:3px}
+.mm{font-size:.64rem;color:var(--muted);margin-top:2px;padding:0 3px}
+.mw.mine .mm{text-align:right}
+.cmp{padding:10px 12px;border-top:1px solid rgba(200,146,74,.08);display:flex;gap:7px;align-items:center}
+.cinp{flex:1;background:var(--o3);border:1px solid rgba(200,146,74,.18);border-radius:50px;padding:9px 14px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:.86rem;outline:none}
+.cinp:focus{border-color:var(--sand)}
+.csnd{background:linear-gradient(135deg,var(--sand),var(--sandL));border:none;color:var(--o1);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cempty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);gap:6px;font-size:.86rem;padding:30px}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);z-index:800;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.mo.hidden{display:none}
+@media(min-width:600px){.mo{align-items:center;padding:16px}}
+.mbox{background:var(--o2);border:1px solid rgba(200,146,74,.2);border-radius:var(--rL) var(--rL) 0 0;padding:26px 22px;width:100%;max-width:460px;position:relative;animation:slideUp .25s ease;max-height:90vh;overflow-y:auto}
+@media(min-width:600px){.mbox{border-radius:var(--rL);animation:popIn .2s ease}}
+.mbox.wide{max-width:520px}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.mclose{position:absolute;top:12px;right:12px;background:var(--o4);border:none;color:var(--muted);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.82rem;display:flex;align-items:center;justify-content:center}
+.mclose:hover{color:var(--cream)}
+.mt{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:4px}
+.ms2{font-size:.82rem;color:var(--muted);margin-bottom:18px}
+
+/* INFO BOX */
+.ibox{background:rgba(200,146,74,.07);border:1px solid rgba(200,146,74,.22);border-radius:var(--r);padding:11px 13px;font-size:.82rem;color:var(--sandP);line-height:1.6;margin-bottom:14px}
+.ibox-red{background:rgba(192,57,43,.07);border-color:rgba(192,57,43,.25);color:#e8a090}
+
+/* UPLOAD */
+.upz{border:2px dashed rgba(200,146,74,.3);border-radius:var(--r);padding:22px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.upz:hover{border-color:var(--sand);background:rgba(200,146,74,.04)}
+.upz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upz .ui{font-size:1.6rem;margin-bottom:5px;opacity:.3}
+.upz .ut{font-size:.79rem;color:var(--muted)}
+.upr{margin-top:8px;display:none}
+.upr img{max-width:100%;max-height:150px;border-radius:7px}
+
+/* PENDING */
+.pi{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid rgba(200,146,74,.07);flex-wrap:wrap}
+.pi-info{flex:1;min-width:120px}
+.pi-name{font-weight:600;font-size:.9rem}
+.pi-det{font-size:.74rem;color:var(--muted);margin-top:1px}
+.pi-acts{display:flex;gap:5px;flex-wrap:wrap}
+
+/* TOGGLE */
+.trow{display:flex;align-items:center;gap:10px}
+.tog{position:relative;width:40px;height:21px;background:var(--o4);border-radius:50px;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--green)}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:17px;height:17px;background:#fff;border-radius:50%;transition:left .2s}
+.tog.on::after{left:21px}
+
+/* TABS */
+.tabs{display:flex;gap:5px;margin-bottom:16px}
+.tb{flex:1;padding:8px 10px;background:var(--o3);border:1px solid rgba(200,146,74,.15);border-radius:var(--r);color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;font-size:.82rem;transition:all .18s;text-align:center}
+.tb.active{background:rgba(200,146,74,.15);border-color:var(--sand);color:var(--sand)}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.ei{font-size:2.5rem;opacity:.2;margin-bottom:12px}
+.en{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);margin-bottom:5px}
+
+/* TOAST */
+#tc{position:fixed;bottom:calc(var(--bot-h) + 10px);right:12px;z-index:9000;display:flex;flex-direction:column;gap:6px}
+.toast{display:flex;align-items:center;gap:8px;background:var(--o3);border:1px solid rgba(200,146,74,.2);border-radius:9px;padding:9px 13px;font-size:.82rem;min-width:200px;max-width:290px;animation:sU .3s ease;box-shadow:var(--shadow)}
+.toast.toast-error{border-color:rgba(192,57,43,.4)}.toast.toast-success{border-color:rgba(39,174,96,.35)}
+@keyframes sU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* STARS */
+.stars{display:flex;gap:3px;font-size:1.3rem;cursor:pointer}
+.star{opacity:.3;transition:opacity .15s}
+.star.on{opacity:1}
+
+/* PROFILE CARD */
+.pcard{background:var(--o2);border:1px solid rgba(200,146,74,.15);border-radius:var(--rL);padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.pcard-info{flex:1}
+.pcard-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700}
+.pcard-role{font-size:.78rem;color:var(--muted);margin-top:2px}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:36px;color:var(--muted);font-size:.88rem}
+.spin{width:18px;height:18px;border:2px solid rgba(200,146,74,.3);border-top-color:var(--sand);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LANDING */
+#page-landing{min-height:100vh;background:radial-gradient(ellipse at 30% 60%,#1a1005 0%,var(--o1) 55%)}
+.lnav{padding:16px;display:flex;justify-content:center;border-bottom:1px solid rgba(200,146,74,.08)}
+.llogo{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:900;color:var(--sand)}
+.llogo em{font-style:normal;color:var(--muted);font-size:.65em;font-family:'Outfit',sans-serif;font-weight:300}
+.lhero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:50px 20px 36px}
+.ley{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:2.5px;color:var(--sand);margin-bottom:14px}
+.lh1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,8vw,4.5rem);font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:14px}
+.lh1 .hi{color:var(--sand)}
+.ltag{font-size:.95rem;color:var(--muted);max-width:400px;margin-bottom:36px;line-height:1.65}
+.erow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:44px}
+.ebtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:18px 22px;border-radius:var(--rL);cursor:pointer;transition:all .25s;border:1px solid rgba(200,146,74,.18);background:var(--o2);min-width:120px}
+.ebtn:hover{border-color:var(--sand);transform:translateY(-3px);box-shadow:var(--glow)}
+.ebtn.gold{background:linear-gradient(135deg,var(--sand),var(--sandL));border:none;color:var(--o1)}
+.ebtn.gold:hover{filter:brightness(1.07)}
+.ebi{font-size:1.7rem}.ebl{font-weight:700;font-size:.88rem}.ebs{font-size:.68rem;opacity:.62}
+.lfeats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px 60px;max-width:800px;margin:0 auto}
+.fc{padding:18px}
+.fic{font-size:1.4rem;margin-bottom:9px}
+.ftl{font-family:'Playfair Display',serif;font-weight:700;font-size:.9rem;margin-bottom:4px}
+.fds{font-size:.78rem;color:var(--muted);line-height:1.55}
+
+/* PRODUCT DETAIL */
+.pdim{width:100%;height:200px;background:var(--o3);border-radius:var(--r);margin-bottom:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pdim img{width:100%;height:100%;object-fit:cover}
+
+/* SELLER PROFILE IN MODAL */
+.seller-mini{display:flex;align-items:center;gap:9px;background:var(--o3);border-radius:var(--r);padding:10px 12px;margin-bottom:14px}
+.seller-stars{font-size:.8rem;color:var(--sand)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="tc"></div>
+<div id="mo" class="mo hidden"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA93Vdg7fDd33-0oysNk1zdgrgc8wqOnik",
+  authDomain: "oasis-market-12f36.firebaseapp.com",
+  projectId: "oasis-market-12f36",
+  storageBucket: "oasis-market-12f36.firebasestorage.app",
+  messagingSenderId: "73499000789",
+  appId: "1:73499000789:web:25d0a36bef4f8a0ca2875c"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+// ══════════════════════════════════
+//  FIREBASE HELPERS
+// ══════════════════════════════════
+const FB = {
+  async createUser(id,data){ await setDoc(doc(db,'users',id),{...data,createdAt:new Date().toLocaleDateString('fr-FR')}); },
+  async getUser(id){ const d=await getDoc(doc(db,'users',id)); return d.exists()?{id:d.id,...d.data()}:null; },
+  async getUserByUsername(username){ const snap=await getDocs(collection(db,'users')); const f=snap.docs.find(d=>d.data().username===username); return f?{id:f.id,...f.data()}:null; },
+  async getAllUsers(){ const snap=await getDocs(collection(db,'users')); return snap.docs.map(d=>({id:d.id,...d.data()})); },
+  async updateUser(id,data){ await updateDoc(doc(db,'users',id),data); },
+  async addProduct(data){ const r=await addDoc(collection(db,'products'),{...data,createdAt:serverTimestamp()}); return r.id; },
+  async getProducts(){ const snap=await getDocs(collection(db,'products')); return snap.docs.map(d=>({id:d.id,...d.data()})); },
+  async deleteProduct(id){ await deleteDoc(doc(db,'products',id)); },
+  async updateProduct(id,data){ await updateDoc(doc(db,'products',id),data); },
+  async sendMessage(chatId,msg){ await addDoc(collection(db,'chats',chatId,'messages'),{...msg,ts:serverTimestamp()}); await setDoc(doc(db,'chats',chatId),{participants:chatId.split('_'),lastMsg:msg.text,lastTime:msg.time},{merge:true}); },
+  async getUserChats(userId){ const snap=await getDocs(collection(db,'chats')); return snap.docs.filter(d=>d.id.includes(userId)).map(d=>({id:d.id,...d.data()})); },
+  async getAllChats(){ const snap=await getDocs(collection(db,'chats')); return snap.docs.map(d=>({id:d.id,...d.data()})); },
+  listenMessages(chatId,cb){ const q=query(collection(db,'chats',chatId,'messages'),orderBy('ts','asc')); return onSnapshot(q,snap=>cb(snap.docs.map(d=>({id:d.id,...d.data()})))); },
+  async addNotif(userId,text,type='info'){ await addDoc(collection(db,'notifications',userId,'items'),{text,type,read:false,time:"À l'instant",ts:serverTimestamp()}); },
+  async getNotifs(userId){ try{ const q=query(collection(db,'notifications',userId,'items'),orderBy('ts','desc')); const snap=await getDocs(q); return snap.docs.map(d=>({id:d.id,...d.data()})); }catch(e){return[];} },
+  async markNotifsRead(userId){ try{ const snap=await getDocs(collection(db,'notifications',userId,'items')); for(const d of snap.docs) await updateDoc(d.ref,{read:true}); }catch(e){} },
+  async addRating(sellerId,buyerId,buyerName,score,comment){
+    await setDoc(doc(db,'ratings',`${sellerId}_${buyerId}`),{sellerId,buyerId,buyerName,score,comment,createdAt:serverTimestamp()},{merge:true});
+    // Recalculate average
+    const snap=await getDocs(query(collection(db,'ratings'),where('sellerId','==',sellerId)));
+    const ratings=snap.docs.map(d=>d.data());
+    const avg=ratings.reduce((a,r)=>a+r.score,0)/ratings.length;
+    await updateDoc(doc(db,'users',sellerId),{avgRating:Math.round(avg*10)/10,ratingCount:ratings.length});
+  },
+  async getSellerRatings(sellerId){ const snap=await getDocs(query(collection(db,'ratings'),where('sellerId','==',sellerId))); return snap.docs.map(d=>({id:d.id,...d.data()})); }
+};
+
+// ══════════════════════════════════
+//  UTILS
+// ══════════════════════════════════
+const U = {
+  cid:(a,b)=>[a,b].sort().join('_'),
+  time:()=>new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),
+  price:n=>Number(n).toLocaleString('fr-FR')+' FCFA',
+  stars:(n,max=5)=>{ let s=''; for(let i=1;i<=max;i++) s+=`<span style="color:${i<=n?'var(--sand)':'rgba(200,146,74,.2)'};font-size:.85rem">★</span>`; return s; },
+  cache:{users:{},products:[],unsub:null}
+};
+
+// ══════════════════════════════════
+//  TOAST
+// ══════════════════════════════════
+const T={
+  show(msg,type='success'){
+    const el=document.createElement('div');
+    el.className=`toast toast-${type}`;
+    el.innerHTML=`<span>${type==='success'?'✅':'❌'}</span><span>${msg}</span>`;
+    document.getElementById('tc').appendChild(el);
+    setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .4s';setTimeout(()=>el.remove(),400)},3200);
+  }
+};
+
+// ══════════════════════════════════
+//  MODAL
+// ══════════════════════════════════
+const M={
+  open(html,wide=false){
+    const o=document.getElementById('mo');
+    o.innerHTML=`<div class="mbox${wide?' wide':''}"><button class="mclose" onclick="M.close()">✕</button>${html}</div>`;
+    o.classList.remove('hidden');
+  },
+  close(){ document.getElementById('mo').classList.add('hidden'); document.getElementById('mo').innerHTML=''; },
+  init(){ document.getElementById('mo').addEventListener('click',e=>{ if(e.target===document.getElementById('mo'))M.close(); }); }
+};
+window.M=M;
+
+// ══════════════════════════════════
+//  APP
+// ══════════════════════════════════
+const App={
+  cu:null, cv:'',
+
+  async init(){
+    M.init();
+    const admin=await FB.getUser('admin');
+    if(!admin) await FB.createUser('admin',{name:'Administrateur',username:'admin',password:'oasis2024',role:'admin',status:'active',avatar:'A'});
+    Landing.render();
+  },
+
+  async enter(user){
+    App.cu=user; U.cache.users[user.id]=user;
+    U.cache.products=await FB.getProducts();
+    App._shell();
+    App.go(user.role==='admin'?'dashboard':'catalog');
+    App._dot();
+  },
+
+  _shell(){
+    const u=App.cu;
+    const rl=u.role==='admin'?'Admin':u.role==='seller'?'Vendeur':'Acheteur';
+    const rc=u.role==='admin'?'bg-red':u.role==='seller'?'bg-gold':'bg-green';
+
+    // Build bottom nav based on role
+    let navItems=[];
+    navItems.push({id:'catalog',icon:'🏠',label:'Accueil'});
+    navItems.push({id:'chat',icon:'💬',label:'Messages'});
+    if(u.role==='seller'||u.role==='admin'){
+      navItems.push({id:'my-products',icon:'📦',label:'Mes ventes'});
+    }
+    if(u.role==='admin'){
+      navItems.push({id:'dashboard',icon:'📊',label:'Tableau'});
+      navItems.push({id:'admin-users',icon:'👥',label:'Admin'});
+    }
+    if(u.role==='buyer'){
+      navItems.push({id:'profile',icon:'👤',label:'Profil'});
+    }
+
+    document.getElementById('app').innerHTML=`
+    <div id="page-app">
+      <div id="topbar">
+        <div class="tlogo">🌴 OASIS <span>market</span></div>
+        <div class="tbr">
+          <button class="notif-btn" onclick="App.notifs()" id="notif-btn">🔔<span class="ndot" id="ndot"></span></button>
+          <div style="display:flex;align-items:center;gap:6px;background:var(--o3);border-radius:50px;padding:3px 10px 3px 4px">
+            <div class="av">${u.avatar}</div>
+            <span style="font-size:.82rem;font-weight:500;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.name.split(' ')[0]}</span>
+            <span class="badge ${rc}" style="font-size:.62rem">${rl}</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="App.logout()" style="padding:6px 10px">↩</button>
+        </div>
+      </div>
+      <div id="main"></div>
+      <nav id="botnav">
+        ${navItems.map(n=>`<div class="bn-item" id="bn-${n.id}" onclick="App.go('${n.id}')">
+          <div class="bni">${n.icon}</div><div class="bnl">${n.label}</div>
+          ${n.id==='chat'?'<div class="bn-dot" id="chat-dot"></div>':''}
+        </div>`).join('')}
+        <div class="bn-item" onclick="App.goHome()"><div class="bni">🚪</div><div class="bnl">Quitter</div></div>
+      </nav>
+    </div>`;
+  },
+
+  _updateNav(view){
+    document.querySelectorAll('.bn-item').forEach(el=>el.classList.remove('active'));
+    const active=document.getElementById('bn-'+view);
+    if(active) active.classList.add('active');
+  },
+
+  async go(view){
+    App.cv=view; App._updateNav(view);
+    const m=document.getElementById('main'); if(!m)return;
+    if(U.cache.unsub){U.cache.unsub();U.cache.unsub=null;}
+    m.innerHTML='<div class="loading"><div class="spin"></div> Chargement…</div>';
+    switch(view){
+      case 'catalog': await Views.catalog(m); break;
+      case 'chat': await Views.chat(m); break;
+      case 'my-products': await Views.myProducts(m); break;
+      case 'add-product': Views.addProduct(m); break;
+      case 'profile': await Views.profile(m); break;
+      case 'dashboard': await Views.dashboard(m); break;
+      case 'admin-users': await Views.adminUsers(m); break;
+      case 'admin-pending': await Views.adminPending(m); break;
+      case 'admin-products': await Views.adminProducts(m); break;
+      case 'surveillance': await Views.surveillance(m); break;
+      default: await Views.catalog(m);
+    }
+  },
+
+  goHome(){ App.cu=null; App.cv=''; Landing.render(); },
+  logout(){ App.cu=null; App.cv=''; T.show('Déconnexion réussie.'); Landing.render(); },
+
+  async _dot(){
+    const ns=await FB.getNotifs(App.cu.id);
+    const unread=ns.filter(n=>!n.read).length;
+    const d=document.getElementById('ndot');
+    if(d) d.style.display=unread>0?'block':'none';
+  },
+
+  async notifs(){
+    const ns=await FB.getNotifs(App.cu.id);
+    M.open(`<div class="mt">🔔 Notifications</div>
+    <div style="margin-top:12px">
+      ${ns.length===0?'<div class="tmuted tsm" style="text-align:center;padding:16px">Aucune notification</div>'
+        :ns.map(n=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(200,146,74,.07)">
+          <div style="width:7px;height:7px;border-radius:50%;background:${n.read?'var(--muted)':'var(--sand)'};margin-top:5px;flex-shrink:0"></div>
+          <div><div style="font-size:.83rem">${n.text}</div><div class="txs tmuted" style="margin-top:1px">${n.time}</div></div>
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm btn-full" style="margin-top:10px" onclick="App._rall()">Tout marquer comme lu</button>`);
+  },
+
+  async _rall(){ await FB.markNotifsRead(App.cu.id); const d=document.getElementById('ndot'); if(d)d.style.display='none'; M.close(); }
+};
+window.App=App;
+
+// ══════════════════════════════════
+//  LANDING
+// ══════════════════════════════════
+const Landing={
+  render(){
+    document.getElementById('app').innerHTML=`
+    <div id="page-landing">
+      <nav class="lnav"><div class="llogo">🌴 OASIS <em>market</em></div></nav>
+      <div class="lhero">
+        <div class="ley">Votre marché en ligne</div>
+        <h1 class="lh1">Achète & vends<br><span class="hi">en toute confiance.</span></h1>
+        <p class="ltag">La marketplace qui connecte vendeurs et acheteurs avec des échanges directs, sécurisés et négociables.</p>
+        <div class="erow">
+          <div class="ebtn gold" onclick="Landing.adm()"><div class="ebi">👑</div><div class="ebl">Admin</div><div class="ebs">Accès sécurisé</div></div>
+          <div class="ebtn" onclick="Landing.auth('buyer')"><div class="ebi">🛒</div><div class="ebl">Acheteur</div><div class="ebs">Connexion / Inscription</div></div>
+          <div class="ebtn" onclick="Landing.auth('seller')"><div class="ebi">🏪</div><div class="ebl">Vendeur</div><div class="ebs">Connexion / Inscription</div></div>
+        </div>
+      </div>
+      <div class="lfeats">
+        <div class="fc card"><div class="fic">✅</div><div class="ftl">Vendeurs certifiés</div><div class="fds">Chaque vendeur est validé par l'admin avant de vendre.</div></div>
+        <div class="fc card"><div class="fic">💬</div><div class="ftl">Négociation directe</div><div class="fds">Discutez directement avec le vendeur pour négocier.</div></div>
+        <div class="fc card"><div class="fic">⭐</div><div class="ftl">Système de notes</div><div class="fds">Notez les vendeurs après chaque transaction.</div></div>
+        <div class="fc card"><div class="fic">📦</div><div class="ftl">Livraison indiquée</div><div class="fds">Chaque article précise si la livraison est disponible.</div></div>
+      </div>
+    </div>`;
+  },
+
+  adm(){
+    M.open(`<div class="mt">👑 Accès Administrateur</div>
+    <div class="ms2">Espace réservé</div>
+    <div class="fg"><label class="fl">Identifiant</label><input class="fi" id="au" placeholder="admin" autocomplete="off"></div>
+    <div class="fg"><label class="fl">Mot de passe</label><input class="fi" id="ap2" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')Landing._adm()"></div>
+    <div class="ferr" id="ae">Identifiants incorrects</div>
+    <button class="btn btn-gold btn-full" style="margin-top:6px" onclick="Landing._adm()">Accéder</button>`);
+  },
+
+  async _adm(){
+    const u=document.getElementById('au').value.trim();
+    const p=document.getElementById('ap2').value.trim();
+    const adm=await FB.getUser('admin');
+    if(!adm||adm.username!==u||adm.password!==p){document.getElementById('ae').classList.add('show');return;}
+    M.close(); App.enter(adm);
+  },
+
+  auth(role){
+    const isSeller=role==='seller';
+    M.open(`<div class="mt">${isSeller?'🏪 Espace Vendeur':'🛒 Espace Acheteur'}</div>
+    <div class="tabs">
+      <button class="tb active" id="tla" onclick="Landing._tab('login')">Connexion</button>
+      <button class="tb" id="tra" onclick="Landing._tab('register')">Inscription</button>
+    </div>
+    <div id="fl2">
+      <div class="fg"><label class="fl">Identifiant</label><input class="fi" id="li" placeholder="Votre identifiant"></div>
+      <div class="fg"><label class="fl">Mot de passe</label><input class="fi" id="lp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')Landing._login()"></div>
+      <div class="ferr" id="le">Identifiants incorrects ou compte inactif</div>
+      <button class="btn btn-gold btn-full" style="margin-top:5px" onclick="Landing._login()">Se connecter</button>
+    </div>
+    <div id="fr2" style="display:none">
+      ${isSeller?'<div class="ibox">💰 L\'inscription vendeur nécessite un paiement de <strong>5 000 FCFA</strong>. Un chat s\'ouvrira avec l\'admin pour confirmer.</div>':''}
+      <div class="fg"><label class="fl">Nom complet</label><input class="fi" id="rn" placeholder="Ex: Konan Yves"></div>
+      <div class="fg"><label class="fl">Identifiant</label><input class="fi" id="ru" placeholder="Ex: konan_yves"></div>
+      <div class="fg"><label class="fl">Mot de passe</label><input class="fi" id="rp" type="password" placeholder="Minimum 6 caractères"></div>
+      <div class="fg"><label class="fl">Confirmer</label><input class="fi" id="rp2" type="password" placeholder="Répétez le mot de passe"></div>
+      <div class="ferr" id="re"></div>
+      <button class="btn btn-gold btn-full" style="margin-top:5px" onclick="Landing._reg('${role}')">Créer mon compte</button>
+    </div>`);
+  },
+
+  _tab(t){
+    document.getElementById('tla').classList.toggle('active',t==='login');
+    document.getElementById('tra').classList.toggle('active',t==='register');
+    document.getElementById('fl2').style.display=t==='login'?'block':'none';
+    document.getElementById('fr2').style.display=t==='register'?'block':'none';
+  },
+
+  async _login(){
+    const u=document.getElementById('li').value.trim();
+    const p=document.getElementById('lp').value.trim();
+    const user=await FB.getUserByUsername(u);
+    const e=document.getElementById('le');
+    if(!user||user.password!==p||user.id==='admin'){e.classList.add('show');return;}
+    e.classList.remove('show'); M.close(); App.enter(user);
+  },
+
+  async _reg(role){
+    const name=document.getElementById('rn').value.trim();
+    const un=document.getElementById('ru').value.trim();
+    const pw=document.getElementById('rp').value.trim();
+    const pw2=document.getElementById('rp2').value.trim();
+    const e=document.getElementById('re');
+    if(!name||!un||!pw){e.textContent='Tous les champs sont requis.';e.classList.add('show');return;}
+    if(pw.length<6){e.textContent='Mot de passe trop court (min. 6 caractères).';e.classList.add('show');return;}
+    if(pw!==pw2){e.textContent='Les mots de passe ne correspondent pas.';e.classList.add('show');return;}
+    const existing=await FB.getUserByUsername(un);
+    if(existing){e.textContent='Cet identifiant est déjà pris.';e.classList.add('show');return;}
+    const id='u'+Date.now();
+    const status=role==='seller'?'pending':'active';
+    const nu={id,name,username:un,password:pw,role,status,avatar:name[0].toUpperCase(),avgRating:0,ratingCount:0};
+    await FB.createUser(id,nu); U.cache.users[id]={...nu};
+    if(role==='seller'){
+      const cid=U.cid(id,'admin');
+      await FB.sendMessage(cid,{from:id,text:`Bonjour Administrateur, je suis ${name}. J'ai effectué le paiement de 5 000 FCFA pour activer mon compte vendeur. Merci de confirmer.`,time:U.time()});
+      await FB.addNotif('admin',`${name} demande la validation de son compte vendeur.`,'pending');
+      await FB.addNotif(id,"Un chat a été ouvert avec l'administrateur pour confirmer votre paiement de 5 000 FCFA.",'info');
+      M.close(); T.show("Compte créé ! En attente de validation par l'admin.");
+    } else {
+      M.close(); T.show('Bienvenue sur OASIS Market 🎉');
+    }
+    App.enter({...nu});
+  }
+};
+window.Landing=Landing;
+
+// ══════════════════════════════════
+//  VIEWS
+// ══════════════════════════════════
+const Views={
+
+  // ── CATALOG ──
+  async catalog(m){
+    U.cache.products=await FB.getProducts();
+    const cats=['Toutes',...new Set(U.cache.products.map(p=>p.category))];
+    let q='', cat='Toutes';
+    const render=()=>{
+      const adm=U.cache.products.filter(p=>p.sellerId==='admin'&&p.available!==false);
+      const oth=U.cache.products.filter(p=>p.sellerId!=='admin'&&p.available!==false);
+      const list=[...adm,...oth].filter(p=>{
+        const ms=!q||p.name.toLowerCase().includes(q)||(p.description||'').toLowerCase().includes(q)||p.category.toLowerCase().includes(q);
+        return ms&&(cat==='Toutes'||p.category===cat);
+      });
+      const g=document.getElementById('cgrid'); if(!g)return;
+      if(!list.length){g.innerHTML=`<div class="empty"><div class="ei">🔍</div><div class="en">Aucun article trouvé</div></div>`;return;}
+      g.innerHTML=`<div class="pg">${list.map(p=>Views._pcard(p)).join('')}</div>`;
+    };
+    m.innerHTML=`<div class="sh"><div><div class="st">Catalogue</div><div class="ss">${U.cache.products.filter(p=>p.available!==false).length} articles disponibles</div></div></div>
+    <div class="srch">
+      <div class="sw"><span class="sw-ico">🔍</span><input class="si2" placeholder="Rechercher…" oninput="window._cq=this.value;window._render&&window._render()"></div>
+      <select class="csel" onchange="window._cc=this.value;window._render&&window._render()">
+        ${cats.map(c=>`<option value="${c}">${c}</option>`).join('')}
+      </select>
+    </div>
+    <div id="cgrid"></div>`;
+    window._render=render; window._cq=''; window._cc='Toutes';
+    // patch input handler
+    m.querySelector('.si2').addEventListener('input',function(){q=this.value;render();});
+    m.querySelector('.csel').addEventListener('change',function(){cat=this.value;render();});
+    render();
+  },
+
+  _pcard(p){
+    const isOwner=App.cu&&(App.cu.id===p.sellerId||App.cu.role==='admin');
+    const sellerName=p.priority?'⭐ OASIS Market':(U.cache.users[p.sellerId]?.name||p.sellerName||'—');
+    return `<div class="card pc card-hover" onclick="Views.openProduct('${p.id}')">
+      <div class="pim">
+        ${p.image?`<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="pph" style="display:none">${p.emoji||'📦'}</div>`:`<div class="pph">${p.emoji||'📦'}</div>`}
+        ${p.priority?'<div class="pb1">⭐ Vedette</div>':''}
+        ${p.delivery?'<div class="pb2">🚚</div>':''}
+      </div>
+      <div class="pbody">
+        <div class="pname">${p.name}</div>
+        <div class="psel">${sellerName}</div>
+        <div class="ppr">${U.price(p.price)}</div>
+        <div class="pact" onclick="event.stopPropagation()">
+          ${!isOwner?`<button class="btn btn-sm btn-gold" onclick="Views.openProduct('${p.id}')">Voir</button><button class="btn btn-sm btn-ghost" onclick="ChatV.with('${p.sellerId}')">💬</button>`:''}
+          ${isOwner?`<button class="btn btn-sm btn-ghost" onclick="Views.openProduct('${p.id}')">Voir</button><button class="btn btn-sm btn-danger" onclick="Seller.del('${p.id}')">🗑</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  async openProduct(id){
+    const p=U.cache.products.find(x=>x.id===id); if(!p)return;
+    const isOwner=App.cu&&App.cu.id===p.sellerId;
+    const isAdmin=App.cu&&App.cu.role==='admin';
+    const isBuyer=App.cu&&App.cu.role==='buyer';
+    let seller=U.cache.users[p.sellerId];
+    if(!seller&&p.sellerId){ seller=await FB.getUser(p.sellerId); if(seller)U.cache.users[p.sellerId]=seller; }
+    const sellerName=p.priority?'OASIS Market':(seller?.name||p.sellerName||'—');
+    const ratingHtml=seller&&seller.ratingCount>0
+      ?`<div class="seller-mini"><div class="av" style="width:28px;height:28px;font-size:.72rem">${seller.avatar||'?'}</div><div><div style="font-size:.82rem;font-weight:600">${sellerName}</div><div class="seller-stars">${U.stars(Math.round(seller.avgRating||0))} <span style="color:var(--muted);font-size:.72rem">(${seller.ratingCount} avis)</span></div></div></div>`
+      :`<div class="seller-mini"><div class="av" style="width:28px;height:28px;font-size:.72rem">${seller?.avatar||'?'}</div><div style="font-size:.82rem;font-weight:600">${sellerName}</div></div>`;
+    M.open(`
+    <div class="pdim">${p.image?`<img src="${p.image}" alt="${p.name}">`:`<div style="font-size:3.8rem;opacity:.2">${p.emoji||'📦'}</div>`}</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:8px">${p.name}</h2>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <span class="badge bg-gray">${p.category}</span>
+      ${p.delivery?'<span class="badge bg-green">🚚 Livraison</span>':'<span class="badge bg-gray">🚶 Main propre</span>'}
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:14px">${p.description||''}</p>
+    ${ratingHtml}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:11px;background:var(--o3);border-radius:var(--r);margin-bottom:14px">
+      <span style="font-size:1.3rem;font-weight:700;color:var(--sand)">${U.price(p.price)}</span>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      ${!isOwner&&!isAdmin?`<button class="btn btn-gold" onclick="M.close();ChatV.with('${p.sellerId}')">💬 Négocier</button>`:''}
+      ${isBuyer?`<button class="btn btn-blue btn-sm" onclick="Views.rateModal('${p.sellerId}','${sellerName}')">⭐ Noter le vendeur</button>`:''}
+      ${isOwner||isAdmin?`<button class="btn btn-danger btn-sm" onclick="M.close();Seller.del('${p.id}')">🗑 Supprimer</button>`:''}
+      <button class="btn btn-ghost btn-sm" onclick="M.close()">Fermer</button>
+    </div>`,true);
+  },
+
+  rateModal(sellerId,sellerName){
+    let chosen=0;
+    M.open(`<div class="mt">⭐ Noter ${sellerName}</div>
+    <div class="ms2">Partagez votre expérience avec ce vendeur</div>
+    <div class="fg"><label class="fl">Note</label>
+      <div class="stars" id="star-row">
+        ${[1,2,3,4,5].map(i=>`<span class="star" data-v="${i}" onclick="Views._starClick(${i})" style="font-size:1.8rem;cursor:pointer;opacity:.3">★</span>`).join('')}
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Commentaire (optionnel)</label><textarea class="fi" id="rcmt" placeholder="Décrivez votre expérience…" rows="3"></textarea></div>
+    <div class="ferr" id="rerr">Veuillez choisir une note.</div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-gold" onclick="Views._submitRating('${sellerId}')">Envoyer</button>
+      <button class="btn btn-ghost" onclick="M.close()">Annuler</button>
+    </div>`);
+    window._ratingVal=0;
+  },
+
+  _starClick(v){
+    window._ratingVal=v;
+    document.querySelectorAll('.star').forEach(s=>{
+      s.style.opacity=parseInt(s.dataset.v)<=v?'1':'.3';
+      s.style.color=parseInt(s.dataset.v)<=v?'var(--sand)':'rgba(200,146,74,.2)';
+    });
+  },
+
+  async _submitRating(sellerId){
+    const score=window._ratingVal||0;
+    const comment=document.getElementById('rcmt')?.value.trim()||'';
+    if(!score){document.getElementById('rerr').classList.add('show');return;}
+    await FB.addRating(sellerId,App.cu.id,App.cu.name,score,comment);
+    M.close(); T.show('Note envoyée ! Merci 🙏');
+  },
+
+  // ── MY PRODUCTS (Seller + Admin) ──
+  async myProducts(m){
+    const u=App.cu;
+    if(u.status==='pending'){
+      m.innerHTML=`<div class="sh"><div class="st">Mes ventes</div></div>
+      <div class="empty"><div class="ei">⏳</div><div class="en">Compte en attente</div>
+      <p style="margin-bottom:14px">L'admin validera votre compte après confirmation du paiement de 5 000 FCFA.</p>
+      <button class="btn btn-gold" onclick="ChatV.with('admin')">💬 Contacter l'admin</button></div>`;
+      return;
+    }
+    U.cache.products=await FB.getProducts();
+    const list=U.cache.products.filter(p=>p.sellerId===u.id);
+    const totalRevenu=list.reduce((a,p)=>a+p.price,0);
+    m.innerHTML=`
+    <div class="sh">
+      <div><div class="st">Mes ventes</div><div class="ss">${list.length} article(s) publié(s)</div></div>
+      <button class="btn btn-gold btn-sm" onclick="App.go('add-product')">➕ Ajouter</button>
+    </div>
+    ${u.role==='seller'?`<div class="card" style="padding:14px;margin-bottom:16px;display:flex;gap:14px;align-items:center">
+      <div><div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)">Ma note moyenne</div>
+        <div style="display:flex;align-items:center;gap:5px;margin-top:3px">
+          <span style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--sand)">${u.avgRating||'—'}</span>
+          <div>${u.avgRating?U.stars(Math.round(u.avgRating)):''}</div>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted)">${u.ratingCount||0} avis reçus</div>
+      </div>
+      <div style="margin-left:auto">
+        <span class="badge ${u.status==='active'?'bg-green':u.status==='pending'?'bg-gold':'bg-red'}">${u.status==='active'?'✅ Compte actif':u.status==='pending'?'⏳ En attente':'❌ Inactif'}</span>
+      </div>
+    </div>`:''}
+    ${list.length===0?`<div class="empty"><div class="ei">📦</div><div class="en">Aucun article publié</div><p style="margin-bottom:14px">Commencez à vendre !</p><button class="btn btn-gold" onclick="App.go('add-product')">➕ Ajouter un article</button></div>`
+    :`<div class="pg">${list.map(p=>Views._myPcard(p)).join('')}</div>`}`;
+  },
+
+  _myPcard(p){
+    return `<div class="card pc">
+      <div class="pim">
+        ${p.image?`<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="pph" style="display:none">${p.emoji||'📦'}</div>`:`<div class="pph">${p.emoji||'📦'}</div>`}
+        ${p.priority?'<div class="pb1">⭐</div>':''}
+        ${p.available===false?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700">INDISPO</div>':''}
+      </div>
+      <div class="pbody">
+        <div class="pname">${p.name}</div>
+        <div class="psel">${p.category}</div>
+        <div class="ppr">${U.price(p.price)}</div>
+        <div class="pact">
+          <button class="btn btn-sm btn-ghost" onclick="Seller.toggle('${p.id}',${p.available!==false})">${p.available!==false?'⏸':'▶'}</button>
+          <button class="btn btn-sm btn-danger" onclick="Seller.del('${p.id}')">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  // ── ADD PRODUCT ──
+  addProduct(m){
+    if(App.cu.status==='pending'){Views.myProducts(m);return;}
+    window._selImg=null; window._selDeliv=false;
+    m.innerHTML=`<div class="sh"><div><div class="st">Publier un article</div><div class="ss">Remplissez toutes les informations</div></div></div>
+    <div class="card" style="padding:20px">
+      <div class="fg"><label class="fl">📸 Photo du produit</label>
+        <div class="upz" id="upz"><input type="file" accept="image/*" onchange="Seller._up(this)">
+          <div class="ui">📷</div><div class="ut">Appuyez pour ajouter une photo<br><span style="font-size:.7rem;opacity:.5">JPG, PNG — max 5 Mo</span></div>
+        </div>
+        <div class="upr" id="upr"><img id="upi" src="" alt=""><button class="btn btn-ghost btn-sm" style="margin-top:6px" onclick="Seller._clr()">✕ Supprimer</button></div>
+      </div>
+      <div class="fg"><label class="fl">Nom de l'article *</label><input class="fi" id="an" placeholder="Ex: iPhone 13 Pro 128Go"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fg"><label class="fl">Catégorie *</label>
+          <select class="fi" id="ac">
+            <option>Téléphones</option><option>Informatique</option><option>Mode & Accessoires</option>
+            <option>Électroménager</option><option>Machines</option><option>Meubles & Maison</option>
+            <option>Véhicules</option><option>Alimentation</option><option>Beauté & Santé</option>
+            <option>Sport & Loisirs</option><option>Autre</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Prix (FCFA) *</label><input class="fi" id="apr" type="number" placeholder="150000" min="100"></div>
+      </div>
+      <div class="fg"><label class="fl">Description *</label><textarea class="fi" id="ad" rows="3" placeholder="État, caractéristiques, utilisation…"></textarea></div>
+      <div class="fg"><label class="fl">Emoji</label><input class="fi" id="aem" maxlength="4" value="📦" style="max-width:90px"></div>
+      <div class="fg"><label class="fl">Livraison disponible ?</label>
+        <div class="trow"><div class="tog" id="dtog" onclick="Seller._tog()"></div><span id="dlab" style="font-size:.83rem">Non</span></div>
+      </div>
+      <div class="ferr" id="aerr"></div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-gold" id="sub-btn" onclick="Seller.submit()">🚀 Publier</button>
+        <button class="btn btn-ghost" onclick="App.go('my-products')">Annuler</button>
+      </div>
+    </div>`;
+  },
+
+  // ── PROFILE (Buyer) ──
+  async profile(m){
+    const u=App.cu;
+    const allProducts=await FB.getProducts();
+    const convs=await FB.getUserChats(u.id);
+    m.innerHTML=`
+    <div class="sh"><div><div class="st">Mon profil</div></div></div>
+    <div class="pcard">
+      <div class="av-xl">${u.avatar}</div>
+      <div class="pcard-info">
+        <div class="pcard-name">${u.name}</div>
+        <div class="pcard-role">@${u.username} · 🛒 Acheteur</div>
+        <div style="margin-top:6px"><span class="badge bg-green">✅ Compte actif</span></div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="card sc"><div class="sc-l">Conversations</div><div class="sc-v">${convs.length}</div><div class="sc-n">avec des vendeurs</div></div>
+      <div class="card sc"><div class="sc-l">Inscrit le</div><div class="sc-v" style="font-size:1rem;padding-top:6px">${u.createdAt||'—'}</div></div>
+    </div>
+    <div class="sh" style="margin-top:8px"><div><div class="st" style="font-size:1.1rem">Actions rapides</div></div></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-gold btn-full" onclick="App.go('catalog')">🏠 Voir le catalogue</button>
+      <button class="btn btn-ghost btn-full" onclick="App.go('chat')">💬 Mes conversations</button>
+      <button class="btn btn-blue btn-full" onclick="ChatV.with('admin')" style="background:rgba(41,128,185,.15);border:1px solid rgba(41,128,185,.3);color:#5dade2">📞 Contacter l'administrateur</button>
+    </div>`;
+  },
+
+  // ── CHAT ──
+  async chat(m){
+    const convs=await FB.getUserChats(App.cu.id);
+    // preload users
+    for(const c of convs){
+      const parts=c.id.split('_');
+      for(const pid of parts){
+        if(!U.cache.users[pid]){
+          const u=await FB.getUser(pid);
+          if(u) U.cache.users[pid]=u;
+        }
+      }
+    }
+    m.innerHTML=`<div class="sh"><div><div class="st">Messages</div><div class="ss">${convs.length} conversation(s)</div></div></div>
+    <div class="chat-wrap">
+      <div class="conv-list" id="conv-list">
+        <div class="cl-h">💬 Mes conversations</div>
+        ${convs.length===0?`<div style="padding:20px;text-align:center;color:var(--muted);font-size:.83rem">Aucune conversation.<br>Cliquez sur 💬 depuis un article.</div>`
+        :convs.map(c=>{
+          const parts=c.id.split('_');
+          const oid=parts.find(p=>p!==App.cu.id);
+          const other=U.cache.users[oid];
+          return `<div class="ci" id="ci-${c.id}" onclick="ChatV.open('${oid}')">
+            <div class="av">${other?.avatar||'?'}</div>
+            <div><div class="ci-nm">${other?.name||oid}</div><div class="ci-pv">${c.lastMsg||''}</div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="chat-open hidden" id="chat-open"></div>
+    </div>`;
+  },
+
+  // ── DASHBOARD (Admin) ──
+  async dashboard(m){
+    const users=await FB.getAllUsers();
+    users.forEach(u=>U.cache.users[u.id]=u);
+    U.cache.products=await FB.getProducts();
+    const nonAdmin=users.filter(u=>u.id!=='admin');
+    const sellers=nonAdmin.filter(u=>u.role==='seller'&&u.status==='active').length;
+    const buyers=nonAdmin.filter(u=>u.role==='buyer').length;
+    const pend=nonAdmin.filter(u=>u.status==='pending').length;
+    // Top rated sellers
+    const topSellers=nonAdmin.filter(u=>u.role==='seller'&&u.ratingCount>0).sort((a,b)=>(b.avgRating||0)-(a.avgRating||0)).slice(0,3);
+    m.innerHTML=`<div class="sh"><div><div class="st">Tableau de bord</div><div class="ss">Vue d'ensemble</div></div></div>
+    <div class="srow">
+      <div class="card sc"><div class="sc-l">Utilisateurs</div><div class="sc-v">${nonAdmin.length}</div></div>
+      <div class="card sc"><div class="sc-l">Vendeurs actifs</div><div class="sc-v">${sellers}</div></div>
+      <div class="card sc"><div class="sc-l">Acheteurs</div><div class="sc-v">${buyers}</div></div>
+      <div class="card sc"><div class="sc-l">En attente</div><div class="sc-v" style="color:${pend>0?'var(--sand)':'var(--green)'}">${pend}</div></div>
+    </div>
+    <div class="card" style="padding:14px;margin-bottom:14px">
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:10px">📋 Navigation rapide</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="App.go('admin-pending')" style="position:relative">⏳ En attente${pend>0?`<span style="position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:16px;height:16px;border-radius:50%;font-size:.62rem;display:flex;align-items:center;justify-content:center">${pend}</span>`:''}</button>
+        <button class="btn btn-ghost btn-sm" onclick="App.go('admin-users')">👥 Utilisateurs</button>
+        <button class="btn btn-ghost btn-sm" onclick="App.go('admin-products')">📦 Articles</button>
+        <button class="btn btn-ghost btn-sm" onclick="App.go('surveillance')">🔍 Chats</button>
+      </div>
+    </div>
+    ${topSellers.length>0?`<div class="sh"><div><div class="st" style="font-size:1.1rem">⭐ Meilleurs vendeurs</div></div></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${topSellers.map((s,i)=>`<div class="card" style="padding:12px;display:flex;align-items:center;gap:11px">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--sand);width:22px">${i+1}</div>
+        <div class="av">${s.avatar}</div>
+        <div style="flex:1"><div style="font-weight:600;font-size:.88rem">${s.name}</div>
+        <div style="font-size:.72rem;color:var(--muted)">${U.stars(Math.round(s.avgRating||0))} ${s.avgRating} / 5 · ${s.ratingCount} avis</div></div>
+      </div>`).join('')}
+    </div>`:''}
+    ${pend>0?`<div class="ibox" style="cursor:pointer;margin-top:14px" onclick="App.go('admin-pending')">⚡ <strong>${pend} vendeur(s)</strong> attendent votre validation. <span style="color:var(--sand)">Valider →</span></div>`:''}`;
+  },
+
+  // ── ADMIN USERS ──
+  async adminUsers(m){
+    const users=(await FB.getAllUsers()).filter(u=>u.id!=='admin');
+    users.forEach(u=>U.cache.users[u.id]=u);
+    m.innerHTML=`<div class="sh"><div><div class="st">Utilisateurs</div><div class="ss">${users.length} compte(s)</div></div></div>
+    ${users.length===0?`<div class="empty"><div class="ei">👥</div><div class="en">Aucun utilisateur</div></div>`
+    :`<div style="display:flex;flex-direction:column;gap:8px">
+      ${users.map(u=>`<div class="card" style="padding:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="av">${u.avatar||u.name[0]}</div>
+        <div style="flex:1;min-width:100px">
+          <div style="font-weight:600;font-size:.88rem">${u.name}</div>
+          <div style="font-size:.72rem;color:var(--muted)">@${u.username} · ${u.createdAt||'—'}</div>
+          <div style="margin-top:3px;display:flex;gap:5px;flex-wrap:wrap">
+            <span class="badge ${u.role==='seller'?'bg-gold':'bg-green'}">${u.role==='seller'?'🏪 Vendeur':'🛒 Acheteur'}</span>
+            <span class="badge ${u.status==='active'?'bg-green':u.status==='pending'?'bg-gold':'bg-red'}">${u.status==='active'?'✅ Actif':u.status==='pending'?'⏳ Attente':'❌ Inactif'}</span>
+            ${u.role==='seller'&&u.ratingCount>0?`<span class="badge bg-gray">⭐ ${u.avgRating} (${u.ratingCount})</span>`:''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-ghost" onclick="ChatV.with('${u.id}')">💬</button>
+          ${u.status==='pending'?`<button class="btn btn-sm btn-success" onclick="Admin.val('${u.id}')">✅</button>`:''}
+          ${u.status==='active'?`<button class="btn btn-sm btn-danger" onclick="Admin.deact('${u.id}')">Désact.</button>`:''}
+          ${u.status==='inactive'||u.status==='rejected'?`<button class="btn btn-sm btn-success" onclick="Admin.react('${u.id}')">Réact.</button>`:''}
+        </div>
+      </div>`).join('')}
+    </div>`}`;
+  },
+
+  // ── ADMIN PENDING ──
+  async adminPending(m){
+    const pend=(await FB.getAllUsers()).filter(u=>u.status==='pending');
+    m.innerHTML=`<div class="sh"><div><div class="st">En attente</div><div class="ss">${pend.length} demande(s)</div></div></div>
+    ${pend.length===0?`<div class="empty"><div class="ei">✅</div><div class="en">Aucune demande en attente</div></div>`
+    :`<div style="display:flex;flex-direction:column;gap:8px">
+      ${pend.map(u=>`<div class="card pi">
+        <div class="av av-lg">${u.avatar||u.name[0]}</div>
+        <div class="pi-info"><div class="pi-name">${u.name}</div><div class="pi-det">@${u.username} · ${u.createdAt||''}</div></div>
+        <div class="pi-acts">
+          <button class="btn btn-sm btn-ghost" onclick="ChatV.with('${u.id}')">💬</button>
+          <button class="btn btn-sm btn-success" onclick="Admin.val('${u.id}')">✅ Valider</button>
+          <button class="btn btn-sm btn-danger" onclick="Admin.rej('${u.id}')">❌</button>
+        </div>
+      </div>`).join('')}
+    </div>`}`;
+  },
+
+  // ── ADMIN PRODUCTS ──
+  async adminProducts(m){
+    U.cache.products=await FB.getProducts();
+    m.innerHTML=`<div class="sh">
+      <div><div class="st">Tous les articles</div><div class="ss">${U.cache.products.length} article(s)</div></div>
+      <button class="btn btn-gold btn-sm" onclick="App.go('add-product')">➕ Ajouter</button>
+    </div>
+    ${U.cache.products.length===0?`<div class="empty"><div class="ei">📦</div><div class="en">Aucun article</div></div>`
+    :`<div style="display:flex;flex-direction:column;gap:8px">
+      ${U.cache.products.map(p=>`<div class="card" style="padding:11px;display:flex;align-items:center;gap:10px">
+        <div style="width:48px;height:48px;border-radius:8px;background:var(--o3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+          ${p.image?`<img src="${p.image}" style="width:100%;height:100%;object-fit:cover">`:`<span style="font-size:1.5rem">${p.emoji||'📦'}</span>`}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name} ${p.priority?'⭐':''}</div>
+          <div style="font-size:.72rem;color:var(--muted)">${p.sellerName||'—'} · ${p.category}</div>
+          <div style="color:var(--sand);font-weight:600;font-size:.88rem">${U.price(p.price)}</div>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="Seller.del('${p.id}')">🗑</button>
+      </div>`).join('')}
+    </div>`}`;
+  },
+
+  // ── SURVEILLANCE ──
+  async surveillance(m){
+    const chats=await FB.getAllChats();
+    for(const c of chats){
+      const parts=c.id.split('_');
+      for(const pid of parts){
+        if(!U.cache.users[pid]){const u=await FB.getUser(pid);if(u)U.cache.users[pid]=u;}
+      }
+    }
+    m.innerHTML=`<div class="sh"><div><div class="st">Surveillance chats</div><div class="ss">${chats.length} conversation(s)</div></div></div>
+    <div class="chat-wrap">
+      <div class="conv-list" id="surv-list">
+        <div class="cl-h">🔍 Toutes les conversations</div>
+        ${chats.length===0?`<div style="padding:20px;text-align:center;color:var(--muted);font-size:.83rem">Aucune conversation</div>`
+        :chats.map(c=>{
+          const parts=c.id.split('_');
+          const u1=U.cache.users[parts[0]],u2=U.cache.users[parts[1]];
+          return `<div class="ci" id="sci-${c.id}" onclick="Admin._sv('${c.id}')">
+            <div class="av" style="background:var(--o4)">${u1?.avatar||'?'}</div>
+            <div><div class="ci-nm" style="font-size:.8rem">${u1?.name||parts[0]} ↔ ${u2?.name||parts[1]}</div>
+            <div class="ci-pv">${c.lastMsg||''}</div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="chat-open hidden" id="surv-open"></div>
+    </div>`;
+  }
+};
+window.Views=Views;
+
+// ══════════════════════════════════
+//  CHAT VIEW
+// ══════════════════════════════════
+const ChatV={
+  with(targetId){ App.go('chat'); setTimeout(()=>ChatV.open(targetId),250); },
+
+  async open(tid){
+    let target=U.cache.users[tid];
+    if(!target){target=await FB.getUser(tid);if(target)U.cache.users[tid]=target;}
+    if(!target)return;
+
+    const cid=U.cid(App.cu.id,tid);
+    const convList=document.getElementById('conv-list');
+    const chatOpen=document.getElementById('chat-open');
+    if(convList) convList.classList.add('hidden');
+    if(chatOpen){
+      chatOpen.classList.remove('hidden');
+      chatOpen.innerHTML=`
+        <div class="cr-h">
+          <button class="back-btn" onclick="ChatV._back()">←</button>
+          <div class="av">${target.avatar||target.name[0]}</div>
+          <div><div style="font-weight:600;font-size:.88rem">${target.name}</div>
+          <div class="txs tmuted">${target.role==='admin'?'👑 Admin':target.role==='seller'?'🏪 Vendeur':'🛒 Acheteur'}</div></div>
+          ${target.role==='seller'&&target.avgRating?`<div style="margin-left:auto;font-size:.75rem;color:var(--sand)">⭐ ${target.avgRating}</div>`:''}
+        </div>
+        <div class="msgs" id="ma"><div class="loading"><div class="spin"></div></div></div>
+        <div class="cmp">
+          <input class="cinp" id="ci2" placeholder="Votre message…" onkeydown="if(event.key==='Enter')ChatV.send('${tid}')">
+          <button class="csnd" onclick="ChatV.send('${tid}')">➤</button>
+        </div>`;
+    }
+
+    if(U.cache.unsub) U.cache.unsub();
+    U.cache.unsub=FB.listenMessages(cid,msgs=>{
+      const ma=document.getElementById('ma'); if(!ma)return;
+      ma.innerHTML=msgs.length===0
+        ?'<div style="text-align:center;color:var(--muted);font-size:.81rem;margin-top:28px">Démarrez la conversation !</div>'
+        :msgs.map(msg=>{
+          const mine=msg.from===App.cu.id;
+          const s=U.cache.users[msg.from];
+          return `<div class="mw ${mine?'mine':'other'}"><div class="mb">${msg.text}</div><div class="mm">${mine?'Vous':(s?s.name:'?')} · ${msg.time||''}</div></div>`;
+        }).join('');
+      setTimeout(()=>ma.scrollTop=ma.scrollHeight,40);
+    });
+    document.getElementById('ci2')?.focus();
+  },
+
+  _back(){
+    const cl=document.getElementById('conv-list');
+    const co=document.getElementById('chat-open');
+    if(cl) cl.classList.remove('hidden');
+    if(co) co.classList.add('hidden');
+    if(U.cache.unsub){U.cache.unsub();U.cache.unsub=null;}
+  },
+
+  async send(tid){
+    const inp=document.getElementById('ci2');
+    const text=inp?.value.trim(); if(!text)return;
+    const cid=U.cid(App.cu.id,tid);
+    inp.value='';
+    await FB.sendMessage(cid,{from:App.cu.id,text,time:U.time()});
+  }
+};
+window.ChatV=ChatV;
+
+// ══════════════════════════════════
+//  SELLER ACTIONS
+// ══════════════════════════════════
+const Seller={
+  _up(inp){
+    const f=inp.files[0]; if(!f)return;
+    if(f.size>5*1024*1024){T.show('Image trop lourde (max 5Mo).','error');return;}
+    const r=new FileReader();
+    r.onload=e=>{
+      window._selImg=e.target.result;
+      document.getElementById('upi').src=e.target.result;
+      document.getElementById('upr').style.display='block';
+      document.getElementById('upz').style.display='none';
+    };
+    r.readAsDataURL(f);
+  },
+  _clr(){ window._selImg=null; document.getElementById('upr').style.display='none'; document.getElementById('upz').style.display='block'; },
+  _tog(){
+    window._selDeliv=!window._selDeliv;
+    document.getElementById('dtog').classList.toggle('on',window._selDeliv);
+    document.getElementById('dlab').textContent=window._selDeliv?'Oui':'Non';
+  },
+  async submit(){
+    const name=document.getElementById('an').value.trim();
+    const price=parseInt(document.getElementById('apr').value);
+    const desc=document.getElementById('ad').value.trim();
+    const cat=document.getElementById('ac').value;
+    const emoji=document.getElementById('aem').value.trim()||'📦';
+    const e=document.getElementById('aerr');
+    if(!name||!price||!desc){e.textContent='Remplissez tous les champs.';e.classList.add('show');return;}
+    if(isNaN(price)||price<100){e.textContent='Prix invalide.';e.classList.add('show');return;}
+    e.classList.remove('show');
+    const btn=document.getElementById('sub-btn');
+    btn.disabled=true; btn.textContent='⏳ Publication…';
+    const isAdmin=App.cu.id==='admin';
+    const prod={sellerId:App.cu.id,sellerName:App.cu.name,name,description:desc,price,category:cat,emoji,delivery:window._selDeliv||false,available:true,image:window._selImg||null,priority:isAdmin};
+    await FB.addProduct(prod);
+    window._selImg=null; window._selDeliv=false;
+    T.show('Article publié ! 🎉');
+    App.go('my-products');
+  },
+  async toggle(id,currentAvail){
+    await FB.updateProduct(id,{available:!currentAvail});
+    U.cache.products=await FB.getProducts();
+    T.show('Article mis à jour.');
+    App.go('my-products');
+  },
+  async del(id){
+    await FB.deleteProduct(id);
+    U.cache.products=U.cache.products.filter(p=>p.id!==id);
+    T.show('Article supprimé.');
+    App.go(App.cv);
+  }
+};
+window.Seller=Seller;
+
+// ══════════════════════════════════
+//  ADMIN ACTIONS
+// ══════════════════════════════════
+const Admin={
+  async val(uid){
+    await FB.updateUser(uid,{status:'active'});
+    const u=await FB.getUser(uid); U.cache.users[uid]=u;
+    await FB.addNotif(uid,'🎉 Votre compte vendeur a été validé ! Vous pouvez publier vos articles.','success');
+    const cid=U.cid(uid,'admin');
+    await FB.sendMessage(cid,{from:'admin',text:`Bonjour ${u.name} ! ✅ Votre compte vendeur a été validé. Bienvenue sur OASIS Market !`,time:U.time()});
+    T.show(`${u.name} validé !`); App.go('admin-pending');
+  },
+  async rej(uid){
+    await FB.updateUser(uid,{status:'rejected'});
+    const u=await FB.getUser(uid);
+    await FB.addNotif(uid,"Votre demande a été refusée. Contactez l'administrateur.",'error');
+    T.show(`${u?.name} refusé.`,'error'); App.go('admin-pending');
+  },
+  async deact(uid){
+    await FB.updateUser(uid,{status:'inactive'});
+    const u=await FB.getUser(uid); T.show(`${u?.name} désactivé.`,'error'); App.go('admin-users');
+  },
+  async react(uid){
+    await FB.updateUser(uid,{status:'active'});
+    const u=await FB.getUser(uid); T.show(`${u?.name} réactivé !`); App.go('admin-users');
+  },
+  async _sv(cid){
+    document.querySelectorAll('[id^="sci-"]').forEach(el=>el.classList.remove('active'));
+    const el=document.getElementById('sci-'+cid); if(el)el.classList.add('active');
+    const parts=cid.split('_');
+    let u1=U.cache.users[parts[0]],u2=U.cache.users[parts[1]];
+    if(!u1){u1=await FB.getUser(parts[0]);if(u1)U.cache.users[parts[0]]=u1;}
+    if(!u2){u2=await FB.getUser(parts[1]);if(u2)U.cache.users[parts[1]]=u2;}
+    const survList=document.getElementById('surv-list');
+    const survOpen=document.getElementById('surv-open');
+    if(survList) survList.classList.add('hidden');
+    if(survOpen){
+      survOpen.classList.remove('hidden');
+      survOpen.innerHTML=`
+        <div class="cr-h">
+          <button class="back-btn" onclick="Admin._svBack()">←</button>
+          <div class="av" style="background:var(--o4)">${u1?.avatar||'?'}</div>
+          <div style="font-size:.82rem"><div style="font-weight:600">${u1?.name||'?'} ↔ ${u2?.name||'?'}</div><div class="txs tmuted">Mode surveillance</div></div>
+        </div>
+        <div class="msgs" id="sma"><div class="loading"><div class="spin"></div></div></div>
+        <div class="cmp">
+          <input class="cinp" id="sinp" placeholder="Intervenir…" onkeydown="if(event.key==='Enter')Admin._ss('${cid}')">
+          <button class="csnd" onclick="Admin._ss('${cid}')">➤</button>
+        </div>`;
+    }
+    if(U.cache.unsub) U.cache.unsub();
+    U.cache.unsub=FB.listenMessages(cid,msgs=>{
+      const ma=document.getElementById('sma'); if(!ma)return;
+      ma.innerHTML=msgs.map(msg=>{
+        const s=U.cache.users[msg.from]; const mine=msg.from==='admin';
+        return `<div class="mw ${mine?'mine':'other'}"><div class="mb">${msg.text}</div><div class="mm">${s?s.name:'?'} · ${msg.time||''}</div></div>`;
+      }).join('')||'<div style="text-align:center;color:var(--muted);font-size:.81rem;margin-top:28px">Conversation vide</div>';
+      setTimeout(()=>ma.scrollTop=ma.scrollHeight,40);
+    });
+  },
+  _svBack(){
+    const sl=document.getElementById('surv-list');
+    const so=document.getElementById('surv-open');
+    if(sl)sl.classList.remove('hidden');
+    if(so)so.classList.add('hidden');
+    if(U.cache.unsub){U.cache.unsub();U.cache.unsub=null;}
+  },
+  async _ss(cid){
+    const inp=document.getElementById('sinp');
+    const text=inp?.value.trim(); if(!text)return;
+    inp.value='';
+    await FB.sendMessage(cid,{from:'admin',text,time:U.time()});
+  }
+};
+window.Admin=Admin;
+
+// BOOT
+window.addEventListener('DOMContentLoaded',()=>App.init());
+</script>
+</body>
+</html>
